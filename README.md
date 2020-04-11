@@ -1,4 +1,4 @@
-# How To Create A Knex/Graphql Back End
+# How To Create A Knex / Graphql Back End
 
 ## With Node and Express
 
