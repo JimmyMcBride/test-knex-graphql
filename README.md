@@ -179,11 +179,11 @@ const typeDefs = gql`
 // resolvers are where we put the logic to make our typeDefs come to life
 const resolvers = {
   Query: {
-    async users(parent, args, ctx) {
-      return await db("users");
+    users(parent, args, ctx) {
+      return db("users");
     },
-    async user(_, { id }) {
-      return await db("users").where({ id }).first();
+    user(_, { id }) {
+      return db("users").where({ id }).first();
     },
   },
 };
