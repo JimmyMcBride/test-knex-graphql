@@ -34,6 +34,7 @@ const typeDefs = gql`
     username: String!
     email: String!
     admin: Boolean!
+    blah: String!
   }
   type LoginResponse {
     status: Boolean!
