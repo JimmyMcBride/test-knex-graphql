@@ -1,4 +1,5 @@
 const db = require("../../data/knexConf");
+const { ApolloError } = require("apollo-server-express");
 
 const Query = {
   Query: {

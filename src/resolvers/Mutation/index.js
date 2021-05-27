@@ -1,6 +1,7 @@
 const db = require("../../data/knexConf");
 const { ValidationError, ApolloError } = require("apollo-server-express");
 const bcrypt = require("bcryptjs");
+const { insert } = require("../helpers");
 
 const Mutation = {
   Mutation: {
@@ -29,27 +30,26 @@ const Mutation = {
         return err;
       }
     },
-    async register(_, data, ctx) {
+    async register(_, { data }, ctx) {
+      console.log(`username length ${data.username.length}`);
       try {
-        if (data.username.length >= 4)
+        if (data.username.length < 4)
           throw new ValidationError(
             "Username must be more than 4 characters. 🙄"
           );
 
-        if (data.password.length >= 6)
+        if (data.password.length < 6)
           throw new ValidationError(
             "Password must be more than 6 characters. 🙄"
           );
 
-        const user = await db("users").insert(data).returning("*");
+        const user = await insert("users", data);
 
         if (!user) throw new ApolloError("Something went wrong... 🤕");
 
-        console.log("User:", user, data.username);
-
         ctx.req.session.userId = user.id;
 
-        return user;
+        return user[0];
       } catch (err) {
         console.log(err);
         return err;
@@ -74,7 +74,13 @@ const Mutation = {
           ...data,
           user_id: ctx.req.session.userId,
         };
-        const todo = await db("todos").insert(input).returning("*");
+
+        if (!ctx.req.session.userId)
+          throw new ApolloError(
+            "User needs to be logged int to add a todo. 😬"
+          );
+
+        const todo = await insert("todos", input);
 
         if (!todo) throw new ApolloError("Something went wrong... 🤕");
 
